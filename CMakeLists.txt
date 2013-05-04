@@ -44,6 +44,8 @@ CHECK_FUNCTION_EXISTS(__sync_val_compare_and_swap HAVE___SYNC_VAL_COMPARE_AND_SW
 
 CONFIGURE_FILE(src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
+mz_use_default_compiler_settings()
+
 if(WIN32)
 	mz_add_definition(GOOGLE_GLOG_DLL_DECL)
 	set(SRCS
@@ -69,8 +71,11 @@ if(WIN32)
 	)
 
 	include_directories(
-		${PROJECT_SOURCE_DIR}/src/windows
+		${CMAKE_CURRENT_SOURCE_DIR}/src/windows/
 	)
+
+	mz_add_definition(GLOG_NO_ABBREVIATED_SEVERITIES)
+	mz_add_definition(GOOGLE_GLOG_DLL_DECL=)
 else()
 	set(SRCS
 		src/logging.cc
@@ -100,16 +105,17 @@ else()
 	)
 
 	include_directories(
-		${PROJECT_SOURCE_DIR}/src/
+		${CMAKE_CURRENT_SOURCE_DIR}/src/
 		${CMAKE_CURRENT_BINARY_DIR}/src/		
 	)
+
+	mz_add_definition(NO_THREADS)
+	set(GLOG_3LIBS pthread)
 endif()
 
-mz_use_default_compiler_settings()
-mz_add_definition(NO_THREADS)
 mz_add_flag(GCC -Wall -Wwrite-strings -Woverloaded-virtual -Wno-sign-compare)
 add_library(google-glog STATIC ${SRCS} ${HDRS})
-target_link_libraries(google-glog gflags pthread)
+target_link_libraries(google-glog gflags ${GLOG_3LIBS})
 set_property(TARGET google-glog PROPERTY VERSION 0.3.3)
 set_property(TARGET google-glog PROPERTY SOVERSION 0.3.3)
 mz_target_props(google-glog)

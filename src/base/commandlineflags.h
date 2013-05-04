@@ -59,7 +59,11 @@
 
 #else
 
-#include "glog/logging.h"
+#if _WIN32
+# include "windows/glog/logging.h"
+#else
+# include "glog/logging.h"
+#endif
 
 #define DECLARE_VARIABLE(type, shorttype, name, tn)                     \
   namespace fL##shorttype {                                             \
