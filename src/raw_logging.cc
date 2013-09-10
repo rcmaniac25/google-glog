@@ -41,7 +41,7 @@
 #endif
 #include <fcntl.h>                 // for open()
 #include <time.h>
-#include "config.h"
+#include <glog-config.h>
 #if _WIN32
 # include "windows/glog/logging.h"
 # include "windows/glog/raw_logging.h"

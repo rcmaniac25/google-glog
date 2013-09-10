@@ -78,7 +78,7 @@
 # include "port.h"
 #endif
 
-#include "config.h"
+#include <glog-config.h>
 #if _WIN32
 # include "windows/glog/logging.h"
 #else

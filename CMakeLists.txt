@@ -42,7 +42,7 @@ CHECK_FUNCTION_EXISTS(sigaltstack HAVE_SIGALTSTACK)
 CHECK_FUNCTION_EXISTS(__builtin_expect HAVE___BUILTIN_EXPECT)
 CHECK_FUNCTION_EXISTS(__sync_val_compare_and_swap HAVE___SYNC_VAL_COMPARE_AND_SWAP)
 
-CONFIGURE_FILE(src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
+CONFIGURE_FILE(src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/glog-config.h)
 
 mz_use_default_compiler_settings()
 mz_add_flag(GCC -fPIC)
@@ -80,22 +80,22 @@ if(WIN32)
 	mz_add_definition(GOOGLE_GLOG_DLL_DECL=)
 else()
 	set(SRCS
-		src/logging.cc
-		src/raw_logging.cc
-		src/vlog_is_on.cc
-		src/utilities.cc
-		src/utilities.h
-        src/demangle.cc src/demangle.h
-        src/stacktrace.h
-        src/stacktrace_generic-inl.h
-        src/stacktrace_libunwind-inl.h
-        src/stacktrace_powerpc-inl.h
-        src/stacktrace_x86-inl.h
-        src/stacktrace_x86_64-inl.h
-        src/symbolize.cc src/symbolize.h
-        src/signalhandler.cc
-        src/base/mutex.h src/base/googleinit.h
-        src/base/commandlineflags.h src/googletest.h
+            src/logging.cc
+            src/raw_logging.cc
+            src/vlog_is_on.cc
+            src/utilities.cc
+            src/utilities.h
+            src/demangle.cc src/demangle.h
+            src/stacktrace.h
+            src/stacktrace_generic-inl.h
+            src/stacktrace_libunwind-inl.h
+            src/stacktrace_powerpc-inl.h
+            src/stacktrace_x86-inl.h
+            src/stacktrace_x86_64-inl.h
+            src/symbolize.cc src/symbolize.h
+            src/signalhandler.cc
+            src/base/mutex.h src/base/googleinit.h
+            src/base/commandlineflags.h src/googletest.h
 	)
 	
 	set(HDRS
@@ -114,6 +114,9 @@ else()
 
 	mz_add_definition(NO_THREADS)
 	set(GLOG_3LIBS pthread)
+        if( HAVE_LIB_UNWIND )
+            set(GLOG_3LIBS ${GLOG_3LIBS} unwind)
+        endif()
 endif()
 
 mz_add_flag(GCC -Wall -Wwrite-strings -Woverloaded-virtual -Wno-sign-compare)
