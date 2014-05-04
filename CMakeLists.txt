@@ -4,10 +4,6 @@ INCLUDE (CheckFunctionExists)
 INCLUDE (CheckSymbolExists)
 project(google-glog)
 
-if(NOT HAS_MZ_GLOBAL)
-    include(global.cmake)
-endif()
-
 CHECK_INCLUDE_FILES (dlfcn.h HAVE_DLFCN_H)
 CHECK_INCLUDE_FILES (execinfo.h HAVE_EXECINFO_H)
 CHECK_INCLUDE_FILES (glob.h HAVE_GLOB_H)
@@ -43,6 +39,10 @@ CHECK_FUNCTION_EXISTS(__builtin_expect HAVE___BUILTIN_EXPECT)
 CHECK_FUNCTION_EXISTS(__sync_val_compare_and_swap HAVE___SYNC_VAL_COMPARE_AND_SWAP)
 
 CONFIGURE_FILE(src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/glog-config.h)
+
+if(NOT HAS_MZ_GLOBAL)
+    include(global.cmake)
+endif()
 
 mz_use_default_compiler_settings()
 mz_add_flag(GCC -fPIC)
@@ -114,9 +114,9 @@ else()
 
 	mz_add_definition(NO_THREADS)
 	set(GLOG_3LIBS pthread)
-        if( HAVE_LIB_UNWIND )
-            set(GLOG_3LIBS ${GLOG_3LIBS} unwind)
-        endif()
+    if( HAVE_LIB_UNWIND )
+        set(GLOG_3LIBS ${GLOG_3LIBS} unwind)
+    endif()
 endif()
 
 mz_add_flag(GCC -Wall -Wwrite-strings -Woverloaded-virtual -Wno-sign-compare)

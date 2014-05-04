@@ -211,10 +211,10 @@ if(NOT MZ_COMPILER_TEST_HAS_RUN)
 	if(IOS_PLATFORM)
 		set(DARWIN TRUE CACHE INTERNAL DARWIN  )
 		set(IOS TRUE CACHE INTERNAL IOS)
-		mz_message("dectected toolchain for iOS")	
+		mz_message("dectected toolchain for iOS")
 	elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 		set(DARWIN TRUE CACHE INTERNAL DARWIN  )
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR BLACKBERRY)
 		set(LINUX TRUE CACHE INTERNAL LINUX )
 	else()
 		set(WINDOWS TRUE CACHE INTERNAL WINDOWS )
@@ -291,12 +291,12 @@ if(NOT MZ_COMPILER_TEST_HAS_RUN)
 		set(MZ_32BIT ON CACHE INTERNAL MZ_32BIT)
 	endif()
 
-        # configured build type
-        # NOTE: This can be overriden e.g. on Visual Studio
-        if(CMAKE_BUILD_TYPE STREQUAL "Release")
-            set(MZ_IS_RELEASE TRUE CACHE INTERNAL MZ_IS_RELEASE)
-            mz_debug_message("CMake run in release mode")
-        endif()
+    # configured build type
+    # NOTE: This can be overriden e.g. on Visual Studio
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(MZ_IS_RELEASE TRUE CACHE INTERNAL MZ_IS_RELEASE)
+        mz_debug_message("CMake run in release mode")
+    endif()
 
 endif() #MZ_COMPILER_TEST_HAS_RUN
 
@@ -309,7 +309,7 @@ endif()
 mz_message("Today is: ${MZ_DATE_STRING}")
 
 # optional C++0x/c++11 features on gcc (on vs2010 this is enabled by default)
-if(MZ_IS_GCC AND MZ_HAS_CXX0X) # AND NOT DARWIN)
+if(MZ_IS_GCC AND MZ_HAS_CXX0X AND NOT BLACKBERRY) # AND NOT DARWIN)
     mz_add_cxx_flag(GCC -std=gnu++0x)
 	mz_message("forcing C++11 support on this platform")
 endif()
@@ -347,7 +347,7 @@ elseif(MZ_IS_VS)
 	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MP /MD /D WIN32_VS=1 /O2")
 endif()
 
-if(MZ_HAS_CXX11)
+if(MZ_HAS_CXX11 AND NOT BLACKBERRY)
     mz_add_definition(MZ_HAS_CXX11=1)
     mz_add_definition(MZ_HAS_CXX0X=1)
 endif()

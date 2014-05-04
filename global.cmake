@@ -29,7 +29,7 @@ set(MZ_TOOLS_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
 # BOF: global.cmake
 if(NOT HAS_MZ_GLOBAL)
-	set(HAS_MZ_GLOBAL true)
+  set(HAS_MZ_GLOBAL true)
 
   # detect compiler
   include("${MZ_TOOLS_PATH}/compiler.cmake")
