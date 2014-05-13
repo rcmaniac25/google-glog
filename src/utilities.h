@@ -48,6 +48,8 @@
 # define OS_NETBSD
 #elif defined(__OpenBSD__)
 # define OS_OPENBSD
+#elif defined(__QNX__)
+# define OS_QNX
 #else
 // TODO(hamaji): Add other platforms.
 #endif
