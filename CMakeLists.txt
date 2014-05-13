@@ -12,13 +12,12 @@ CHECK_INCLUDE_FILES (dlfcn.h HAVE_DLFCN_H)
 CHECK_INCLUDE_FILES (execinfo.h HAVE_EXECINFO_H)
 CHECK_INCLUDE_FILES (glob.h HAVE_GLOB_H)
 CHECK_INCLUDE_FILES (inttypes.h HAVE_INTTYPES_H)
-CHECK_INCLUDE_FILES (pthread.h HAVE_LIBPTHREAD)
+CHECK_INCLUDE_FILES (pthread.h HAVE_PTHREAD_H)
 CHECK_INCLUDE_FILES (libunwind.h HAVE_LIBUNWIND_H)
 CHECK_INCLUDE_FILES (libunwind.h HAVE_LIB_UNWIND)
 CHECK_INCLUDE_FILES (gflags/gflags.h HAVE_LIB_GFLAGS)
 set(HAVE_LIB_GFLAGS TRUE) # we can be sure as this is a build dependency
 CHECK_INCLUDE_FILES (memory.h HAVE_MEMORY_H)
-set(HAVE_PTHREAD_H ${HAVE_LIBPTHREAD}) # multiple checks for some reason
 set(HAVE_PTHREAD ${HAVE_PTHREAD_H})
 CHECK_INCLUDE_FILES (pwd.h HAVE_PWD_H)
 CHECK_INCLUDE_FILES (stdint.h HAVE_STDINT_H)
@@ -90,22 +89,22 @@ if(WIN32)
 	mz_add_definition(GOOGLE_GLOG_DLL_DECL=)
 else()
 	set(SRCS
-            src/logging.cc
-            src/raw_logging.cc
-            src/vlog_is_on.cc
-            src/utilities.cc
-            src/utilities.h
-            src/demangle.cc src/demangle.h
-            src/stacktrace.h
-            src/stacktrace_generic-inl.h
-            src/stacktrace_libunwind-inl.h
-            src/stacktrace_powerpc-inl.h
-            src/stacktrace_x86-inl.h
-            src/stacktrace_x86_64-inl.h
-            src/symbolize.cc src/symbolize.h
-            src/signalhandler.cc
-            src/base/mutex.h src/base/googleinit.h
-            src/base/commandlineflags.h src/googletest.h
+        src/logging.cc
+        src/raw_logging.cc
+        src/vlog_is_on.cc
+        src/utilities.cc
+        src/utilities.h
+        src/demangle.cc src/demangle.h
+        src/stacktrace.h
+        src/stacktrace_generic-inl.h
+        src/stacktrace_libunwind-inl.h
+        src/stacktrace_powerpc-inl.h
+        src/stacktrace_x86-inl.h
+        src/stacktrace_x86_64-inl.h
+        src/symbolize.cc src/symbolize.h
+        src/signalhandler.cc
+        src/base/mutex.h src/base/googleinit.h
+        src/base/commandlineflags.h src/googletest.h
 	)
 	
 	set(HDRS
@@ -122,8 +121,11 @@ else()
 		${GFLAGS_INCLUDE_DIRS}
 	)
 
-	mz_add_definition(NO_THREADS)
-	set(GLOG_3LIBS pthread)
+    if( HAVE_PTHREAD_H )
+        set(GLOG_3LIBS pthread)
+    else()
+        mz_add_definition(NO_THREADS)
+    endif()
     if( HAVE_LIB_UNWIND )
         set(GLOG_3LIBS ${GLOG_3LIBS} unwind)
     endif()
@@ -138,23 +140,23 @@ mz_target_props(google-glog)
 
 if(WIN32)
     install(TARGETS google-glog
-                LIBRARY DESTINATION lib
-                RUNTIME DESTINATION bin
-                ARCHIVE DESTINATION lib)
+            LIBRARY DESTINATION lib
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib)
     install(DIRECTORY src/windows/glog
-                DESTINATION include
-                PATTERN "*.svn" EXCLUDE)
+            DESTINATION include
+            PATTERN "*.svn" EXCLUDE)
     install(DIRECTORY doc
-                DESTINATION doc
-                PATTERN "*.svn" EXCLUDE)
+            DESTINATION doc
+            PATTERN "*.svn" EXCLUDE)
 else()
     install(TARGETS google-glog
-                LIBRARY DESTINATION lib
-                RUNTIME DESTINATION bin
-                ARCHIVE DESTINATION lib)
+            LIBRARY DESTINATION lib
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib)
     install(DIRECTORY src/glog
-                DESTINATION include
-                PATTERN "*.svn" EXCLUDE)
+            DESTINATION include
+            PATTERN "*.svn" EXCLUDE)
     if(APPLE)
         install(DIRECTORY doc
                 DESTINATION Library/Documentation/google-glog
